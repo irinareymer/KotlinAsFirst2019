@@ -76,7 +76,7 @@ fun digitNumber(n: Int): Int {
         m /= 10
         count++
     }
-    return (count)
+    return count
 
 }
 
@@ -89,13 +89,13 @@ fun digitNumber(n: Int): Int {
 fun fib(n: Int): Int {
     var res = 1
     var previousRes = 1
-    return if ((n == 1) or (n == 2)) (1)
+    return if ((n == 1) || (n == 2)) 1
     else {
         for (i in 3..n) {
             res += previousRes
             previousRes = res - previousRes
         }
-        (res)
+        res
     }
 
 }
@@ -115,7 +115,7 @@ fun lcm(m: Int, n: Int): Int {
         if (a > b) a -= b
         else b -= a
     }
-    return (c / a)
+    return c / a
 
 }
 
@@ -127,7 +127,7 @@ fun lcm(m: Int, n: Int): Int {
 fun minDivisor(n: Int): Int {
     var k = 2
     while (n % k != 0) k++
-    return (k)
+    return k
 
 }
 
@@ -139,7 +139,7 @@ fun minDivisor(n: Int): Int {
 fun maxDivisor(n: Int): Int {
     var f = n - 1
     while (n % f != 0) f--
-    return (f)
+    return f
 
 }
 
@@ -157,7 +157,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
         if (a > b) a -= b
         else b -= a
     }
-    return (a == 1)
+    return a == 1
 
 }
 
@@ -173,10 +173,10 @@ fun squareBetweenExists(m: Int, n: Int): Boolean {
     val f = sqrt(n.toDouble()).toInt()
     var a = 0
     do {
-        if (((g * g) >= m) and ((g * g) <= n)) a++
+        if (((g * g) >= m) && ((g * g) <= n)) a++
         g++
     } while (g <= f)
-    return (a > 0)
+    return a > 0
 
 }
 
@@ -205,7 +205,7 @@ fun collatzSteps(x: Int): Int {
         if (h % 2 == 0) h /= 2
         else h = 3 * h + 1
     }
-    return (count)
+    return count
 }
 
 /**
@@ -291,7 +291,7 @@ fun isPalindrome(n: Int): Boolean {
             b /= 10
         }
     }
-    return (a == r)
+    return a == r
 }
 
 /**
@@ -324,7 +324,7 @@ fun hasDifferentDigits(n: Int): Boolean {
                 j /= 10
             }
         }
-        return (k != 0)
+        return k != 0
     }
 }
 
@@ -354,7 +354,7 @@ fun squareSequenceDigit(n: Int): Int {
         j = 0
         i++
     }
-    return ((c / (10.0.pow(s - n)).toInt()) % 10)
+    return (c / (10.0.pow(s - n)).toInt()) % 10
 
 }
 
@@ -373,7 +373,7 @@ fun fibSequenceDigit(n: Int): Int {
     var j = 0
     var s = 2
     var l: Number
-    return if ((n == 1) or (n == 2)) 1
+    return if ((n == 1) || (n == 2)) 1
     else {
         while (s < n) {
             c += prev
@@ -386,6 +386,6 @@ fun fibSequenceDigit(n: Int): Int {
             j = 0
             prev = c - prev
         }
-        ((c / (10.0.pow(s - n)).toInt()) % 10)
+        (c / (10.0.pow(s - n)).toInt()) % 10
     }
 }
