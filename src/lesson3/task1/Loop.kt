@@ -71,11 +71,10 @@ fun digitCountInNumber(n: Int, m: Int): Int =
 fun digitNumber(n: Int): Int {
     var count = 0
     var m = n
-    if (n == 0) count = 1
-    while (m > 0) {
+    do {
         m /= 10
         count++
-    }
+    } while (m > 0)
     return count
 
 }
@@ -89,15 +88,12 @@ fun digitNumber(n: Int): Int {
 fun fib(n: Int): Int {
     var res = 1
     var previousRes = 1
-    return if ((n == 1) || (n == 2)) 1
-    else {
-        for (i in 3..n) {
-            res += previousRes
-            previousRes = res - previousRes
-        }
-        res
+    if ((n == 1) || (n == 2)) return 1
+    for (i in 3..n) {
+        res += previousRes
+        previousRes = res - previousRes
     }
-
+    return res
 }
 
 
@@ -110,12 +106,11 @@ fun fib(n: Int): Int {
 fun lcm(m: Int, n: Int): Int {
     var a = m
     var b = n
-    val c = m * n
     while (a != b) {
         if (a > b) a -= b
         else b -= a
     }
-    return c / a
+    return m / a * n
 
 }
 
@@ -126,6 +121,7 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var k = 2
+    if (isPrime(n)) return n
     while (n % k != 0) k++
     return k
 
@@ -137,6 +133,7 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
+    if (isPrime(n)) return 1
     var f = n - 1
     while (n % f != 0) f--
     return f
@@ -239,21 +236,13 @@ fun cos(x: Double, eps: Double): Double = TODO()
  */
 fun revert(n: Int): Int {
     var l = n
-    var c = 0
+    val c = digitNumber(n)
     var r = 0
-    while (l != 0) {
+    for (i in c - 1 downTo 0) {
+        r += (l % 10) * (10.0.pow(i)).toInt()
         l /= 10
-        c++
     }
-    l = n
-    return if (c == 0) 0
-    else {
-        for (i in c - 1 downTo 0) {
-            r += (l % 10) * (10.0.pow(i)).toInt()
-            l /= 10
-        }
-        r
-    }
+    return r
 
 }
 
@@ -267,32 +256,26 @@ fun revert(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun isPalindrome(n: Int): Boolean {
-    var c = 0
-    var l = n
+    var c = digitNumber(n)
     val a: Number
     var b: Number
     var r = 0
-    while (l != 0) {
-        c++
-        l /= 10
+    var h = c
+    if (c % 2 != 0) {
+        c--
+        h++
     }
-    if (c % 2 == 0) {
-        a = n / 10.0.pow(c / 2).toInt()
-        b = n % 10.0.pow(c / 2).toInt()
-        for (i in (c / 2) - 1 downTo 0) {
-            r += (b % 10) * (10.0.pow(i)).toInt()
-            b /= 10
-        }
-    } else {
-        a = n / 10.0.pow((c + 1) / 2).toInt()
-        b = n % 10.0.pow((c - 1) / 2).toInt()
-        for (i in ((c - 1) / 2) - 1 downTo 0) {
-            r += (b % 10) * (10.0.pow(i)).toInt()
-            b /= 10
-        }
+    a = n / 10.0.pow(h / 2).toInt()
+    b = n % 10.0.pow(c / 2).toInt()
+    for (i in (c / 2) - 1 downTo 0) {
+        r += (b % 10) * (10.0.pow(i)).toInt()
+        b /= 10
     }
     return a == r
 }
+
+
+
 
 /**
  * Средняя
@@ -303,30 +286,26 @@ fun isPalindrome(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    var j = n
-    var c = 0
+    var j: Number
+    val c = digitNumber(n) - 1
     var m: Number
     var k = 0
-    if (n == 0) return false
-    else {
-        while (j != 0) {
-            c++
-            j /= 10
-        }
+    var p = c
+    for (i in 1..c) {
         m = n % 10
         j = n / 10
-        c--
-        for (i in 1..c) {
-            if (m != j % 10) {
-                k++
-            } else {
-                m = j % 10
-                j /= 10
-            }
+        for (l in 1..p) {
+            if (m != j % 10) k++
+            j /= 10
         }
-        return k != 0
+        n / 10
+        p--
     }
+    return k != 0
 }
+
+
+
 
 /**
  * Сложная
