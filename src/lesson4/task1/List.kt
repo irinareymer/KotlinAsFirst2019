@@ -3,6 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson3.task1.digitNumber
 import lesson3.task1.isPrime
 import java.util.function.ToDoubleBiFunction
 import kotlin.math.pow
@@ -119,11 +120,9 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * Модуль пустого вектора считать равным 0.0.
  */
 fun abs(v: List<Double>): Double {
-    if (v.isEmpty()) return 0.0
-    val n = v.size
     var s = 0.0
-    for (i in 0 until n) {
-        s += v[i] * v[i]
+    for (x in v) {
+        s += x * x
     }
     return sqrt(s)
 }
@@ -147,10 +146,9 @@ fun mean(list: List<Double>): Double {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
-    val l = list.size
-    val a = list.sum() / l
-    for (i in 0 until l) {
-        list[i] -= a
+    val center = list.sum() / list.size
+    for (i in 0 until list.size) {
+        list[i] -= center
     }
     return list
 }
@@ -163,9 +161,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  * C = a1b1 + a2b2 + ... + aNbN. Произведение пустых векторов считать равным 0.
  */
 fun times(a: List<Int>, b: List<Int>): Int {
-    val n = a.size
     var c = 0
-    for (i in 0 until n) {
+    for (i in 0 until a.size) {
         c += a[i] * b[i]
     }
     return c
@@ -181,10 +178,8 @@ fun times(a: List<Int>, b: List<Int>): Int {
  * Значение пустого многочлена равно 0 при любом x.
  */
 fun polynom(p: List<Int>, x: Int): Int {
-    if (p.isEmpty()) return 0
-    val n = p.size
-    var res = p[0]
-    for (i in 1 until n) {
+    var res = 0
+    for (i in 0 until p.size) {
         res += p[i] * (x.toDouble().pow(i.toDouble())).toInt()
     }
     return res
@@ -201,8 +196,7 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    val n = list.size
-    for (i in 1 until n) {
+    for (i in 1 until list.size) {
         list[i] += list[i - 1]
     }
     return list
@@ -216,15 +210,19 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
-    if (isPrime(n)) return listOf(n)
     val result = mutableListOf<Int>()
-    var j = n
-    var k = 2
-    while (j != 1) {
-        while (j % k != 0) k++
-        result.add(k)
-        j /= k
+    var num = n
+    while (num % 2 == 0) {
+        result.add(2)
+        num /= 2
     }
+    for (m in 3..sqrt(n.toDouble()).toInt() step 2) {
+        while (num % m == 0) {
+            result.add(m)
+            num /= m
+        }
+    }
+    if (num > sqrt(n.toDouble()).toInt()) result.add(num)
     return result
 }
 
@@ -237,15 +235,7 @@ fun factorize(n: Int): List<Int> {
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
 fun factorizeToString(n: Int): String {
-    if (isPrime(n)) return "$n"
-    val result = mutableListOf<Int>()
-    var j = n
-    var k = 2
-    while (j != 1) {
-        while (j % k != 0) k++
-        result.add(k)
-        j /= k
-    }
+    val result = factorize(n)
     return result.joinToString(separator = "*")
 }
 
@@ -259,10 +249,10 @@ fun factorizeToString(n: Int): String {
 fun convert(n: Int, base: Int): List<Int> {
     val result = mutableListOf<Int>()
     var j = n
-    while (j != 0) {
+    do {
         result.add(j % base)
         j /= base
-    }
+    } while (j != 0)
     return result.asReversed()
 }
 
@@ -287,14 +277,14 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int {
-    val n = digits.size - 1
-    var s = 0
-    var u = n
-    for (i in 0..n) {
-        s += digits[i] * (base.toDouble().pow(u)).toInt()
+    val size = digits.size - 1
+    var result = 0
+    var u = size
+    for (i in 0..size) {
+        result += digits[i] * (base.toDouble().pow(u)).toInt()
         u--
     }
-    return s
+    return result
 }
 
 /**
@@ -328,4 +318,54 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val result = mutableListOf<String>()
+    var num = n
+    var div = 100000
+    var count = 6
+    var f1 = 0
+    var f5 = 0
+    val a = listOf(
+        "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"
+    )
+    val b = listOf(
+        "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
+    )
+    val c = listOf("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val r = listOf(
+        "десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать",
+        "семнадцать", "восемнадцать", "девятнадцать"
+    )
+    while (count > 0) {
+        if ((count == 6 || count == 3) && (num / div > 0)) result.add(a[(num / div) - 1])
+        if ((count == 5 || count == 2) && (num / div > 0)) {
+            if (num / div == 1) {
+                if (count == 2) f1++
+                else f5++
+                num %= div
+                div /= 10
+                result.add(r[num / div])
+                count -= 1
+            } else result.add(b[(num / div) - 1])
+        }
+        if (count == 4) {
+            if (f5 == 0 && num / div > 0) when (num / div) {
+                1 -> result.add("одна")
+                2 -> result.add("две")
+                else -> result.add(c[(num / div) - 1])
+            }
+            if (result.isNotEmpty()) when (num / div) {
+                1 -> result.add("тысяча")
+                2 -> result.add("тысячи")
+                3 -> result.add("тысячи")
+                4 -> result.add("тысячи")
+                else -> result.add("тысяч")
+            }
+        }
+        if (count == 1 && (num / div > 0) && f1 == 0) result.add(c[(num / div) - 1])
+        num %= div
+        div /= 10
+        count--
+    }
+    return result.joinToString(separator = " ")
+}

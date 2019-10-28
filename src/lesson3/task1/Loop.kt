@@ -74,7 +74,7 @@ fun digitNumber(n: Int): Int {
     do {
         m /= 10
         count++
-    } while (m > 0)
+    } while (m != 0)
     return count
 
 }
@@ -120,12 +120,13 @@ fun lcm(m: Int, n: Int): Int {
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    var k = 2
-    if (isPrime(n)) return n
-    while (n % k != 0) k++
-    return k
-
+    if (n % 2 == 0) return 2
+    for (m in 3..sqrt(n.toDouble()).toInt() step 2) {
+        if (n % m == 0) return m
+    }
+    return n
 }
+
 
 /**
  * Простая
@@ -133,11 +134,11 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    if (isPrime(n)) return 1
-    var f = n - 1
-    while (n % f != 0) f--
-    return f
-
+    if (n % 2 == 0) return n / 2
+    for (m in 3..sqrt(n.toDouble()).toInt() step 2) {
+        if (n % m == 0) return n / m
+    }
+    return 1
 }
 
 /**
@@ -148,15 +149,11 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    var a = m
-    var b = n
-    while (a != b) {
-        if (a > b) a -= b
-        else b -= a
-    }
-    return a == 1
-
+    var leastCM = lcm(m, n)
+    leastCM /= (n * m)
+    return (leastCM == 1)
 }
+
 
 /**
  * Простая
@@ -257,24 +254,20 @@ fun revert(n: Int): Int {
  */
 fun isPalindrome(n: Int): Boolean {
     var c = digitNumber(n)
-    val a: Number
-    var b: Number
     var r = 0
     var h = c
     if (c % 2 != 0) {
         c--
         h++
     }
-    a = n / 10.0.pow(h / 2).toInt()
-    b = n % 10.0.pow(c / 2).toInt()
+    val a = n / 10.0.pow(h / 2).toInt()
+    var b = n % 10.0.pow(c / 2).toInt()
     for (i in (c / 2) - 1 downTo 0) {
         r += (b % 10) * (10.0.pow(i)).toInt()
         b /= 10
     }
     return a == r
 }
-
-
 
 
 /**
@@ -286,25 +279,17 @@ fun isPalindrome(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun hasDifferentDigits(n: Int): Boolean {
-    var j: Number
-    val c = digitNumber(n) - 1
-    var m: Number
-    var k = 0
-    var p = c
-    for (i in 1..c) {
-        m = n % 10
-        j = n / 10
-        for (l in 1..p) {
-            if (m != j % 10) k++
-            j /= 10
-        }
-        n / 10
-        p--
+    val count = digitNumber(n) - 1
+    var rightDigit = n % 10
+    var leftSideOfNumber = n / 10
+    for (i in 1..count) {
+        if (rightDigit == leftSideOfNumber % 10) {
+            rightDigit = leftSideOfNumber % 10
+            leftSideOfNumber /= 10
+        } else return true
     }
-    return k != 0
+    return false
 }
-
-
 
 
 /**
@@ -317,23 +302,16 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun squareSequenceDigit(n: Int): Int {
-    var c = 0
-    var j = 0
-    var s = 0
-    var l: Number
+    var count = 0
+    var sequence = 0
     var i = 1
-    while (s < n) {
-        c = i * i
-        l = c
-        while (l != 0) {
-            j++
-            l /= 10
-        }
-        s += j
-        j = 0
+    while (sequence < n) {
+        count = i * i
+        val j = digitNumber(count)
+        sequence += j
         i++
     }
-    return (c / (10.0.pow(s - n)).toInt()) % 10
+    return (count / (10.0.pow(sequence - n)).toInt()) % 10
 
 }
 
@@ -347,24 +325,16 @@ fun squareSequenceDigit(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun fibSequenceDigit(n: Int): Int {
-    var c = 1
+    var count = 1
     var prev = 1
-    var j = 0
     var s = 2
-    var l: Number
-    return if ((n == 1) || (n == 2)) 1
-    else {
-        while (s < n) {
-            c += prev
-            l = c
-            while (l != 0) {
-                j++
-                l /= 10
-            }
-            s += j
-            j = 0
-            prev = c - prev
-        }
-        (c / (10.0.pow(s - n)).toInt()) % 10
+    if ((n == 1) || (n == 2)) return 1
+    while (s < n) {
+        count += prev
+        val j = digitNumber(count)
+        s += j
+        prev = count - prev
     }
+    return (count / (10.0.pow(s - n)).toInt()) % 10
+
 }
