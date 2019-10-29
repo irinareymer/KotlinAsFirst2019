@@ -217,7 +217,7 @@ fun factorize(n: Int): List<Int> {
         num /= 2
     }
     for (m in 3..sqrt(n.toDouble()).toInt() step 2) {
-        while (num % m == 0) {
+        while ((num > 1) && (num % m == 0)) {
             result.add(m)
             num /= m
         }
