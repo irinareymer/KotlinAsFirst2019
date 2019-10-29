@@ -145,7 +145,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     val leastCM = lcm(m, n)
-    return ((m * n) / leastCM == 1)
+    return ((m * n) == leastCM)
 }
 
 
