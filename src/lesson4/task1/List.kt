@@ -354,12 +354,13 @@ fun russian(n: Int): String {
                 2 -> result.add("две")
                 else -> result.add(c[(num / div) - 1])
             }
-            if (result.isNotEmpty()) when (num / div) {
-                1 -> result.add("тысяча")
-                2 -> result.add("тысячи")
-                3 -> result.add("тысячи")
-                4 -> result.add("тысячи")
-                else -> result.add("тысяч")
+            if (result.isNotEmpty()) {
+                if (f5 == 1) result.add("тысяч")
+                else when (num / div) {
+                    1 -> result.add("тысяча")
+                    in 2..4 -> result.add("тысячи")
+                    else -> result.add("тысяч")
+                }
             }
         }
         if (count == 1 && (num / div > 0) && f1 == 0) result.add(c[(num / div) - 1])

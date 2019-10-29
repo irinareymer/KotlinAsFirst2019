@@ -2,6 +2,7 @@
 
 package lesson3.task1
 
+import lesson6.task1.firstDuplicateIndex
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -149,9 +150,8 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    var leastCM = lcm(m, n)
-    leastCM /= (n * m)
-    return (leastCM == 1)
+    val leastCM = lcm(m, n)
+    return ((m * n) / leastCM == 1)
 }
 
 
