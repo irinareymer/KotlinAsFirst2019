@@ -109,9 +109,9 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
     for ((key, value) in a) {
-        if (value == b[key]) return true
+        if (value != b[key]) return false
     }
-    return false
+    return true
 }
 
 /**
@@ -201,11 +201,12 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    var str = word.toLowerCase()
-    for (i in 0 until chars.size) chars[i].toLowerCase()
-    while (str.isNotEmpty()) {
-        if (!chars.contains(str.last())) return false
-        str = str.substring(0, str.length - 1)
+    var strLowC = word.toLowerCase()
+    var strUpC = word.toUpperCase()
+    while (strLowC.isNotEmpty()) {
+        if (!chars.contains(strLowC.last()) && !chars.contains(strUpC.last())) return false
+        strLowC = strLowC.substring(0, strLowC.length - 1)
+        strUpC = strUpC.substring(0, strUpC.length - 1)
     }
     return true
 }
@@ -270,7 +271,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     result.putAll(friends)
     for ((name, entries) in result) {
         for (elem in entries) {
-            result[name] = result[name]!!.plus(friends.getOrDefault(elem, setOf()))
+            result[name] = result[name]?.plus(friends.getOrDefault(elem, setOf()))!!
             if (elem !in result) result[elem] = setOf()
         }
         result[name] = result[name]!!.minus(name)
