@@ -53,7 +53,25 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Регистр букв игнорировать, то есть буквы е и Е считать одинаковыми.
  *
  */
-fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> = TODO()
+fun countSubstrings(inputName: String, substrings: List<String>): Map<String, Int> {
+    val result = mutableMapOf<String, Int>()
+    for (i in 0 until substrings.size)
+        result[substrings[i]] = 0
+    for (line in File(inputName).readLines())
+        for (word in line.split(" ")) {
+            for (string in substrings) {
+                var currentWord = word
+                while (string.toUpperCase() in currentWord.toUpperCase()) {
+                    result[string] = result.getOrDefault(string, 0) + 1
+                    val int = currentWord.toUpperCase().indexOf(string[0].toUpperCase())
+                    currentWord =
+                        currentWord.removeRange(int, int + 1)
+                }
+            }
+        }
+    return result
+}
+
 
 
 /**
@@ -258,8 +276,56 @@ Suspendisse ~~et elit in enim tempus iaculis~~.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    outputStream.write("<html>")
+    outputStream.write("<body>")
+    outputStream.write("<p>")
+    var b = 0
+    var i = 0
+    var s = 0
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) {
+            outputStream.write("</p>")
+            outputStream.write("<p>")
+        }
+        for (word in line.split(" ")) {
+            var currentWord = word
+            while ("**" in currentWord) {
+                if (b % 2 == 0) {
+                    currentWord = currentWord.replaceFirst("**", "<b>")
+                    b++
+                } else {
+                    currentWord = currentWord.replaceFirst("**", "</b>")
+                    b++
+                }
+            }
+            while ("*" in currentWord) {
+                if (i % 2 == 0) {
+                    currentWord = currentWord.replaceFirst("*", "<i>")
+                    i++
+                } else {
+                    currentWord = currentWord.replaceFirst("*", "</i>")
+                    i++
+                }
+            }
+            while ("~~" in currentWord) {
+                if (s % 2 == 0) {
+                    currentWord = currentWord.replaceFirst("~~", "<s>")
+                    s++
+                } else {
+                    currentWord = currentWord.replaceFirst("~~", "</s>")
+                    s++
+                }
+            }
+            outputStream.write(currentWord)
+        }
+    }
+    outputStream.write("</p>")
+    outputStream.write("</body>")
+    outputStream.write("</html>")
+    outputStream.close()
 }
+
 
 /**
  * Сложная

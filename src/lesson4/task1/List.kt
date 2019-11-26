@@ -3,9 +3,6 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
-import lesson3.task1.digitNumber
-import lesson3.task1.isPrime
-import java.util.function.ToDoubleBiFunction
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -212,11 +209,7 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
 fun factorize(n: Int): List<Int> {
     val result = mutableListOf<Int>()
     var num = n
-    while (num % 2 == 0) {
-        result.add(2)
-        num /= 2
-    }
-    for (m in 3..sqrt(n.toDouble()).toInt() step 2) {
+    for (m in 2..sqrt(n.toDouble()).toInt()) {
         while ((num > 1) && (num % m == 0)) {
             result.add(m)
             num /= m

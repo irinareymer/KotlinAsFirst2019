@@ -2,6 +2,8 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+
 /**
  * Пример
  *
@@ -69,7 +71,29 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val date = str.split(" ")
+    var m = 0
+    when (date[1]) {
+        "января" -> m = 1
+        "февраля" -> m = 2
+        "марта" -> m = 3
+        "апреля" -> m = 4
+        "мая" -> m = 5
+        "июня" -> m = 6
+        "июля" -> m = 7
+        "августа" -> m = 8
+        "сентября" -> m = 9
+        "октября" -> m = 10
+        "ноября" -> m = 11
+        "декабря" -> m = 12
+    }
+    val year = date[2].toInt()
+    val day = date[0].toInt()
+    if (m == 0 || day > daysInMonth(m, year) || date.size != 3) return ""
+    return String.format("%02d.%02d.$year", day, m)
+
+}
 
 /**
  * Средняя
@@ -81,7 +105,26 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val date = digital.split(".")
+    var m = ""
+    when (date[1]) {
+        "01" -> m = "января"
+        "02" -> m = "февраля"
+        "03" -> m = "марта"
+        "04" -> m = "апреля"
+        "05" -> m = "мая"
+        "06" -> m = "июня"
+        "07" -> m = "июля"
+        "08" -> m = "августа"
+        "09" -> m = "сентября"
+        "10" -> m = "октября"
+        "11" -> m = "ноября"
+        "12" -> m = "декабря"
+    }
+    if (m == "" || date[0].toInt() > daysInMonth(date[1].toInt(), date[2].toInt()) || date.size != 3) return ""
+    return (listOf(date[0].toInt(), m, date[2]).joinToString(separator = " "))
+}
 
 /**
  * Средняя
@@ -133,7 +176,23 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val str = expression.split(" ")
+    if (str.size % 2 == 0) throw IllegalArgumentException()
+    val positive = mutableListOf<Int>()
+    val negative = mutableListOf<Int>()
+    if ("+" !in str[0] && "-" !in str[0]) positive.add(str[0].toInt())
+    else throw IllegalArgumentException()
+    for (i in 2 until str.size step 2) {
+        if ("+" !in str[i] && "-" !in str[i] && (str[i - 1] == "+" || str[i - 1] == "-")) {
+            if (str[i - 1] == "+") positive.add(str[i].toInt())
+            else negative.add(str[i].toInt())
+        } else throw IllegalArgumentException()
+    }
+    return (positive.sum() - negative.sum())
+
+
+}
 
 /**
  * Сложная
@@ -157,7 +216,24 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val costs = mutableListOf("", "")
+    val str = description.split(";")
+    val s = str[0].split(" ")
+    if (s.size == 2) {
+        costs[0] = s[0]
+        costs[1] = s[1]
+    } else return ""
+    for (i in 1 until str.size) {
+        val st = str[i].trim().split(" ")
+        if (st.size != 2) return ""
+        if (st[1].toDouble() > costs[1].toDouble()) {
+            costs[0] = st[0]
+            costs[1] = st[1]
+        }
+    }
+    return costs[0]
+}
 
 /**
  * Сложная
