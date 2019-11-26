@@ -73,6 +73,7 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     val date = str.split(" ")
+    if (date.size != 3) return ""
     var m = 0
     when (date[1]) {
         "января" -> m = 1
@@ -90,7 +91,7 @@ fun dateStrToDigit(str: String): String {
     }
     val year = date[2].toInt()
     val day = date[0].toInt()
-    if (m == 0 || day > daysInMonth(m, year) || date.size != 3) return ""
+    if (m == 0 || day > daysInMonth(m, year)) return ""
     return String.format("%02d.%02d.$year", day, m)
 
 }
@@ -107,6 +108,7 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val date = digital.split(".")
+    if (date.size != 3) return ""
     var m = ""
     when (date[1]) {
         "01" -> m = "января"
@@ -122,7 +124,7 @@ fun dateDigitToStr(digital: String): String {
         "11" -> m = "ноября"
         "12" -> m = "декабря"
     }
-    if (m == "" || date[0].toInt() > daysInMonth(date[1].toInt(), date[2].toInt()) || date.size != 3) return ""
+    if (m == "" || date[0].toInt() > daysInMonth(date[1].toInt(), date[2].toInt())) return ""
     return (listOf(date[0].toInt(), m, date[2]).joinToString(separator = " "))
 }
 
@@ -178,7 +180,7 @@ fun bestHighJump(jumps: String): Int = TODO()
  */
 fun plusMinus(expression: String): Int {
     val str = expression.split(" ")
-    if (str.size % 2 == 0) throw IllegalArgumentException()
+    if (str.size % 2 == 0 || str.isEmpty()) throw IllegalArgumentException()
     val positive = mutableListOf<Int>()
     val negative = mutableListOf<Int>()
     if ("+" !in str[0] && "-" !in str[0]) positive.add(str[0].toInt())

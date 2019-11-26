@@ -60,12 +60,10 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
     for (line in File(inputName).readLines())
         for (word in line.split(" ")) {
             for (string in substrings) {
-                var currentWord = word
-                while (string.toUpperCase() in currentWord.toUpperCase()) {
+                var currentWord = word.toUpperCase()
+                while (string.toUpperCase() in currentWord) {
                     result[string] = result.getOrDefault(string, 0) + 1
-                    val int = currentWord.toUpperCase().indexOf(string[0].toUpperCase())
-                    currentWord =
-                        currentWord.removeRange(int, int + 1)
+                    currentWord = currentWord.replaceFirst(string[0].toUpperCase(), ' ')
                 }
             }
         }
@@ -279,15 +277,20 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     outputStream.write("<html>")
     outputStream.write("<body>")
-    outputStream.write("<p>")
     var b = 0
     var i = 0
     var s = 0
+    var p = 0
     for (line in File(inputName).readLines()) {
-        if (line.isEmpty()) {
-            outputStream.write("</p>")
+        if (line.isNotEmpty() && p % 2 == 0) {
+            p++
             outputStream.write("<p>")
         }
+        if (line.isEmpty() && p % 2 != 0) {
+            p++
+            outputStream.write("</p>")
+        }
+
         for (word in line.split(" ")) {
             var currentWord = word
             while ("**" in currentWord) {
@@ -320,7 +323,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             outputStream.write(currentWord)
         }
     }
-    outputStream.write("</p>")
+    if (p % 2 != 0) outputStream.write("</p>")
     outputStream.write("</body>")
     outputStream.write("</html>")
     outputStream.close()
