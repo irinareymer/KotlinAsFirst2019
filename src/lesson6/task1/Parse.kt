@@ -89,11 +89,11 @@ fun dateStrToDigit(str: String): String {
         "ноября" -> m = 11
         "декабря" -> m = 12
     }
+    if (date[0].toIntOrNull() == null || date[2].toIntOrNull() == null) return ""
     val year = date[2].toInt()
     val day = date[0].toInt()
     if (m == 0 || day > daysInMonth(m, year)) return ""
     return String.format("%02d.%02d.$year", day, m)
-
 }
 
 /**
@@ -180,7 +180,7 @@ fun bestHighJump(jumps: String): Int = TODO()
  */
 fun plusMinus(expression: String): Int {
     val str = expression.split(" ")
-    if (str.size % 2 == 0 || str.isEmpty()) throw IllegalArgumentException()
+    if (str.size % 2 == 0 || str[0].isEmpty()) throw IllegalArgumentException()
     val positive = mutableListOf<Int>()
     val negative = mutableListOf<Int>()
     if ("+" !in str[0] && "-" !in str[0]) positive.add(str[0].toInt())
