@@ -183,11 +183,9 @@ fun plusMinus(expression: String): Int {
     if (str.size % 2 == 0 || str[0].isEmpty()) throw IllegalArgumentException()
     val positive = mutableListOf<Int>()
     val negative = mutableListOf<Int>()
-    if ("+" !in str[0] && "-" !in str[0]) positive.add(str[0].toInt())
-    else throw IllegalArgumentException()
-    for (i in 2 until str.size step 2) {
-        if ("+" !in str[i] && "-" !in str[i] && (str[i - 1] == "+" || str[i - 1] == "-")) {
-            if (str[i - 1] == "+") positive.add(str[i].toInt())
+    for (i in 0 until str.size step 2) {
+        if (str[i].toIntOrNull() != null && ((i != 0 && (str[i - 1] == "+" || str[i - 1] == "-")) || i == 0)) {
+            if (i == 0 || str[i - 1] == "+") positive.add(str[i].toInt())
             else negative.add(str[i].toInt())
         } else throw IllegalArgumentException()
     }

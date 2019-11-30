@@ -287,7 +287,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             p++
             outputStream.write("</p>")
         }
-        if (line.isNotEmpty() && (p % 2 == 0 || p == 1)) {
+        if (line.isNotEmpty() && p % 2 == 0) {
             if (p % 2 == 0) outputStream.write("<p>")
             p++
         }
@@ -321,6 +321,10 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 }
             }
             outputStream.write(currentWord)
+            if (line.isNotEmpty() && p == 1) {
+                if (p == 1) outputStream.write("</p>")
+                p++
+            }
         }
     }
     if (p % 2 != 0) outputStream.write("</p>")
