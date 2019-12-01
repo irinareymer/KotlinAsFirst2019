@@ -3,6 +3,7 @@
 package lesson4.task1
 
 import lesson1.task1.discriminant
+import lesson3.task1.digitNumber
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -311,13 +312,8 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String {
+fun threeDigit(num: Int, f: Int): String {
     val result = mutableListOf<String>()
-    var num = n
-    var div = 100000
-    var count = 6
-    var f1 = 0
-    var f5 = 0
     val a = listOf(
         "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"
     )
@@ -325,41 +321,37 @@ fun russian(n: Int): String {
         "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
     )
     val c = listOf("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val o = listOf("одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
     val r = listOf(
         "десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать",
         "семнадцать", "восемнадцать", "девятнадцать"
     )
-    while (count > 0) {
-        if ((count == 6 || count == 3) && (num / div > 0)) result.add(a[(num / div) - 1])
-        if ((count == 5 || count == 2) && (num / div > 0)) {
-            if (num / div == 1) {
-                if (count == 2) f1++
-                else f5++
-                num %= div
-                div /= 10
-                result.add(r[num / div])
-                count -= 1
-            } else result.add(b[(num / div) - 1])
-        }
-        if (count == 4) {
-            if (f5 == 0 && num / div > 0) when (num / div) {
-                1 -> result.add("одна")
-                2 -> result.add("две")
-                else -> result.add(c[(num / div) - 1])
+    if (num % 1000 / 100 != 0) result.add(a[(num % 1000 / 100) - 1])
+    if (num % 100 / 10 > 1) result.add(b[(num % 100 / 10) - 1])
+    if (num % 100 / 10 == 1) result.add(r[num % 10])
+    if (f == 0 && num % 100 / 10 != 1 && (num % 10 != 0)) result.add(c[(num % 10) - 1])
+    if (f == 1 && num % 100 / 10 != 1 && (num % 10 != 0)) result.add(o[(num % 10) - 1])
+    return result.joinToString(separator = " ")
+}
+
+fun russian(n: Int): String {
+    val result = mutableListOf<String>()
+    var f = 0
+    val count = digitNumber(n)
+    if (count > 3) {
+        f++
+        val num = n / 1000
+        result.add(threeDigit(num, f))
+        f--
+        if (num % 100 / 10 != 1) {
+            when (num % 10) {
+                1 -> result.add("тысяча")
+                in 2..4 -> result.add("тысячи")
+                else -> result.add("тысяч")
             }
-            if (result.isNotEmpty()) {
-                if (f5 == 1) result.add("тысяч")
-                else when (num / div) {
-                    1 -> result.add("тысяча")
-                    in 2..4 -> result.add("тысячи")
-                    else -> result.add("тысяч")
-                }
-            }
-        }
-        if (count == 1 && (num / div > 0) && f1 == 0) result.add(c[(num / div) - 1])
-        num %= div
-        div /= 10
-        count--
+        } else result.add("тысяч")
     }
+    val num = n % 1000
+    if (num != 0) result.add(threeDigit(num, f))
     return result.joinToString(separator = " ")
 }
