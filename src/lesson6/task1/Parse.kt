@@ -184,7 +184,7 @@ fun plusMinus(expression: String): Int {
     val positive = mutableListOf<Int>()
     val negative = mutableListOf<Int>()
     for (i in 0 until str.size step 2) {
-        if (str[i].toIntOrNull() != null && ((i != 0 && (str[i - 1] == "+" || str[i - 1] == "-")) || i == 0)) {
+        if (str[i].toIntOrNull() != null && "+" !in str[i] && "-" !in str[i] && ((i != 0 && (str[i - 1] == "+" || str[i - 1] == "-")) || i == 0)) {
             if (i == 0 || str[i - 1] == "+") positive.add(str[i].toInt())
             else negative.add(str[i].toInt())
         } else throw IllegalArgumentException()

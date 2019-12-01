@@ -277,18 +277,17 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     outputStream.write("<html>")
     outputStream.write("<body>")
-    outputStream.write("<p>")
     var b = 0
     var i = 0
     var s = 0
-    var p = 1
+    var p = 0
     for (line in File(inputName).readLines()) {
-        if (line.isEmpty() && p % 2 != 0 && p != 1) {
+        if (line.isEmpty() && p % 2 != 0) {
             p++
             outputStream.write("</p>")
         }
         if (line.isNotEmpty() && p % 2 == 0) {
-            if (p % 2 == 0) outputStream.write("<p>")
+            outputStream.write("<p>")
             p++
         }
         for (word in line.split(" ")) {
@@ -321,13 +320,13 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 }
             }
             outputStream.write(currentWord)
-            if (line.isNotEmpty() && p == 1) {
-                if (p == 1) outputStream.write("</p>")
-                p++
-            }
         }
     }
     if (p % 2 != 0) outputStream.write("</p>")
+    if (p == 0) {
+        outputStream.write("<p>")
+        outputStream.write("</p>")
+    }
     outputStream.write("</body>")
     outputStream.write("</html>")
     outputStream.close()
