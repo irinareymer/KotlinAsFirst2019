@@ -201,12 +201,10 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    var strLowC = word.toLowerCase()
-    var strUpC = word.toUpperCase()
-    while (strLowC.isNotEmpty()) {
-        if (!chars.contains(strLowC.last()) && !chars.contains(strUpC.last())) return false
-        strLowC = strLowC.substring(0, strLowC.length - 1)
-        strUpC = strUpC.substring(0, strUpC.length - 1)
+    val strLowC = word.toLowerCase()
+    val strUpC = word.toUpperCase()
+    for (i in 0 until word.length) {
+        if (!chars.contains(strLowC[i]) && !chars.contains(strUpC[i])) return false
     }
     return true
 }
@@ -268,19 +266,29 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val result = mutableMapOf<String, Set<String>>()
-    val addToResult = mutableMapOf<String, Set<String>>()
     result.putAll(friends)
     for ((name, entries) in result) {
         if (entries.isEmpty()) result[name] = setOf()
         else {
             for (elem in entries) {
-                result[name] = result[name]?.plus(friends.getOrDefault(elem, setOf()))!!
-                if (elem !in result) addToResult[elem] = setOf()
+                if (elem !in result) {
+                    result[elem] = setOf()
+                    propagateHandshakes(result)
+                    return result
+                } else {
+                    if (result[elem]?.isNotEmpty()!!) {
+                        for (str in result[elem]!!)
+                            if (!result[name]?.contains(str)!!) {
+                                result[name] = result[name]?.plus(str)!!
+                                propagateHandshakes(result)
+                            }
+                    }
+                }
             }
             if (result[name]?.contains(name)!!) result[name] = result[name]?.minus(name)!!
         }
     }
-    return result + addToResult
+    return result
 }
 
 /**
