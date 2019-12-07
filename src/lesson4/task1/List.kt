@@ -312,7 +312,7 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun threeDigit(num: Int, f: Int): String {
+fun threeDigit(num: Int, f: Boolean): String {
     val result = mutableListOf<String>()
     val a = listOf(
         "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"
@@ -327,22 +327,24 @@ fun threeDigit(num: Int, f: Int): String {
         "семнадцать", "восемнадцать", "девятнадцать"
     )
     if (num % 1000 / 100 != 0) result.add(a[(num % 1000 / 100) - 1])
-    if (num % 100 / 10 > 1) result.add(b[(num % 100 / 10) - 1])
     if (num % 100 / 10 == 1) result.add(r[num % 10])
-    if (f == 0 && num % 100 / 10 != 1 && (num % 10 != 0)) result.add(c[(num % 10) - 1])
-    if (f == 1 && num % 100 / 10 != 1 && (num % 10 != 0)) result.add(o[(num % 10) - 1])
+    else {
+        if (num % 100 / 10 != 0) result.add(b[(num % 100 / 10) - 1])
+        if (num % 10 != 0) {
+            if (!f) result.add(c[(num % 10) - 1])
+            else result.add(o[(num % 10) - 1])
+        }
+    }
     return result.joinToString(separator = " ")
 }
 
 fun russian(n: Int): String {
     val result = mutableListOf<String>()
-    var f = 0
     val count = digitNumber(n)
+    val f = true
     if (count > 3) {
-        f++
         val num = n / 1000
         result.add(threeDigit(num, f))
-        f--
         if (num % 100 / 10 != 1) {
             when (num % 10) {
                 1 -> result.add("тысяча")
@@ -352,6 +354,6 @@ fun russian(n: Int): String {
         } else result.add("тысяч")
     }
     val num = n % 1000
-    if (num != 0) result.add(threeDigit(num, f))
+    if (num != 0) result.add(threeDigit(num, !f))
     return result.joinToString(separator = " ")
 }
