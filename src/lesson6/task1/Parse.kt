@@ -74,26 +74,26 @@ fun main() {
 fun dateStrToDigit(str: String): String {
     val date = str.split(" ")
     if (date.size != 3) return ""
-    var m = 0
-    when (date[1]) {
-        "января" -> m = 1
-        "февраля" -> m = 2
-        "марта" -> m = 3
-        "апреля" -> m = 4
-        "мая" -> m = 5
-        "июня" -> m = 6
-        "июля" -> m = 7
-        "августа" -> m = 8
-        "сентября" -> m = 9
-        "октября" -> m = 10
-        "ноября" -> m = 11
-        "декабря" -> m = 12
+    val m: Int
+    m = when (date[1]) {
+        "января" -> 1
+        "февраля" -> 2
+        "марта" -> 3
+        "апреля" -> 4
+        "мая" -> 5
+        "июня" -> 6
+        "июля" -> 7
+        "августа" -> 8
+        "сентября" -> 9
+        "октября" -> 10
+        "ноября" -> 11
+        "декабря" -> 12
+        else -> return ""
     }
-    if (date[0].toIntOrNull() == null || date[2].toIntOrNull() == null) return ""
-    val year = date[2].toInt()
-    val day = date[0].toInt()
-    if (m == 0 || day > daysInMonth(m, year)) return ""
-    return String.format("%02d.%02d.$year", day, m)
+    val year = date[2].toIntOrNull()
+    val day = date[0].toIntOrNull()
+    if (day == null || year == null || day > daysInMonth(m, year) || day <= 0) return ""
+    return String.format("%02d.%02d.%04d", day, m, year)
 }
 
 /**
@@ -109,23 +109,26 @@ fun dateStrToDigit(str: String): String {
 fun dateDigitToStr(digital: String): String {
     val date = digital.split(".")
     if (date.size != 3) return ""
-    var m = ""
-    when (date[1]) {
-        "01" -> m = "января"
-        "02" -> m = "февраля"
-        "03" -> m = "марта"
-        "04" -> m = "апреля"
-        "05" -> m = "мая"
-        "06" -> m = "июня"
-        "07" -> m = "июля"
-        "08" -> m = "августа"
-        "09" -> m = "сентября"
-        "10" -> m = "октября"
-        "11" -> m = "ноября"
-        "12" -> m = "декабря"
+    val m: String
+    m = when (date[1]) {
+        "01" -> "января"
+        "02" -> "февраля"
+        "03" -> "марта"
+        "04" -> "апреля"
+        "05" -> "мая"
+        "06" -> "июня"
+        "07" -> "июля"
+        "08" -> "августа"
+        "09" -> "сентября"
+        "10" -> "октября"
+        "11" -> "ноября"
+        "12" -> "декабря"
+        else -> return ""
     }
-    if (m == "" || date[0].toInt() > daysInMonth(date[1].toInt(), date[2].toInt())) return ""
-    return (listOf(date[0].toInt(), m, date[2]).joinToString(separator = " "))
+    val year = date[2].toIntOrNull()
+    val day = date[0].toIntOrNull()
+    if (day == null || year == null || day > daysInMonth(date[1].toInt(), year) || day <= 0) return ""
+    return ("$day $m $year")
 }
 
 /**
@@ -181,15 +184,16 @@ fun bestHighJump(jumps: String): Int = TODO()
 fun plusMinus(expression: String): Int {
     val str = expression.split(" ")
     if (str.size % 2 == 0 || str[0].isEmpty()) throw IllegalArgumentException()
-    val positive = mutableListOf<Int>()
-    val negative = mutableListOf<Int>()
+    var positive = 0
+    var negative = 0
     for (i in 0 until str.size step 2) {
-        if (str[i].toIntOrNull() != null && "+" !in str[i] && "-" !in str[i] && ((i != 0 && (str[i - 1] == "+" || str[i - 1] == "-")) || i == 0)) {
-            if (i == 0 || str[i - 1] == "+") positive.add(str[i].toInt())
-            else negative.add(str[i].toInt())
+        val s = str[i].toIntOrNull()
+        if (s != null && "+" !in str[i] && "-" !in str[i] && ((i != 0 && (str[i - 1] == "+" || str[i - 1] == "-")) || i == 0)) {
+            if (i == 0 || str[i - 1] == "+") positive += s
+            else negative += s
         } else throw IllegalArgumentException()
     }
-    return (positive.sum() - negative.sum())
+    return (positive - negative)
 
 
 }
@@ -217,22 +221,24 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    val costs = mutableListOf("", "")
-    val str = description.split(";")
+    var name: String
+    var cost: Double
+    val str = description.split("; ")
     val s = str[0].split(" ")
     if (s.size == 2) {
-        costs[0] = s[0]
-        costs[1] = s[1]
+        name = s[0]
+        cost = s[1].toDouble()
     } else return ""
     for (i in 1 until str.size) {
-        val st = str[i].trim().split(" ")
+        val st = str[i].split(" ")
         if (st.size != 2) return ""
-        if (st[1].toDouble() > costs[1].toDouble()) {
-            costs[0] = st[0]
-            costs[1] = st[1]
+        val currentCost = st[1].toDouble()
+        if (currentCost > cost) {
+            name = st[0]
+            cost = currentCost
         }
     }
-    return costs[0]
+    return name
 }
 
 /**
