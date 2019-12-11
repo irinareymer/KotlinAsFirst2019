@@ -93,7 +93,7 @@ fun dateStrToDigit(str: String): String {
     val year = date[2].toIntOrNull()
     val day = date[0].toIntOrNull()
     if (day == null || year == null || day > daysInMonth(m, year) || day <= 0) return ""
-    return String.format("%02d.%02d.%04d", day, m, year)
+    return String.format("%02d.%02d.%d", day, m, year)
 }
 
 /**
@@ -184,16 +184,15 @@ fun bestHighJump(jumps: String): Int = TODO()
 fun plusMinus(expression: String): Int {
     val str = expression.split(" ")
     if (str.size % 2 == 0 || str[0].isEmpty()) throw IllegalArgumentException()
-    var positive = 0
-    var negative = 0
+    var result = 0
     for (i in 0 until str.size step 2) {
         val s = str[i].toIntOrNull()
         if (s != null && "+" !in str[i] && "-" !in str[i] && ((i != 0 && (str[i - 1] == "+" || str[i - 1] == "-")) || i == 0)) {
-            if (i == 0 || str[i - 1] == "+") positive += s
-            else negative += s
+            if (i == 0 || str[i - 1] == "+") result += s
+            else result -= s
         } else throw IllegalArgumentException()
     }
-    return (positive - negative)
+    return result
 
 
 }
@@ -225,14 +224,14 @@ fun mostExpensive(description: String): String {
     var cost: Double
     val str = description.split("; ")
     val s = str[0].split(" ")
-    if (s.size == 2) {
+    if (s.size == 2 && s[1].toDoubleOrNull() != null) {
         name = s[0]
         cost = s[1].toDouble()
     } else return ""
     for (i in 1 until str.size) {
         val st = str[i].split(" ")
         if (st.size != 2) return ""
-        val currentCost = st[1].toDouble()
+        val currentCost = st[1].toDoubleOrNull() ?: return ""
         if (currentCost > cost) {
             name = st[0]
             cost = currentCost
