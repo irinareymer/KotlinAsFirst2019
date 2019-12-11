@@ -280,14 +280,18 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var i = true
     var s = true
     var p = true
+    var isEmpty = true
     for (line in File(inputName).readLines()) {
         if (line.isEmpty() && !p) {
             p = true
             outputStream.write("</p>")
         }
-        if (line.isNotEmpty() && p) {
-            outputStream.write("<p>")
-            p = false
+        if (line.isNotEmpty()) {
+            if (p) {
+                outputStream.write("<p>")
+                p = false
+            }
+            isEmpty = false
         }
         for (word in line.split(" ")) {
             var currentWord = word
@@ -367,7 +371,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
         }
     }
     if (!p) outputStream.write("</p>")
-    if (inputName.isEmpty()) {
+    if (isEmpty) {
         outputStream.write("<p>")
         outputStream.write("</p>")
     }

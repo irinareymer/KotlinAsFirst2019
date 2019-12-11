@@ -337,13 +337,12 @@ fun threeDigit(num: Int, f: Boolean): String {
     }
     return result.joinToString(separator = " ")
 }
-const val f = true
 fun russian(n: Int): String {
     val result = mutableListOf<String>()
     val count = digitNumber(n)
     if (count > 3) {
         val num = n / 1000
-        result.add(threeDigit(num, f))
+        result.add(threeDigit(num, true))
         if (num % 100 / 10 != 1) {
             when (num % 10) {
                 1 -> result.add("тысяча")
@@ -353,6 +352,6 @@ fun russian(n: Int): String {
         } else result.add("тысяч")
     }
     val num = n % 1000
-    if (num != 0) result.add(threeDigit(num, !f))
+    if (num != 0) result.add(threeDigit(num, false))
     return result.joinToString(separator = " ")
 }
