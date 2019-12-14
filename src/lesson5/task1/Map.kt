@@ -267,29 +267,34 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val result = mutableMapOf<String, Set<String>>()
+    val add = mutableMapOf<String, Set<String>>()
     result.putAll(friends)
     for ((name, entries) in result) {
         if (entries.isEmpty()) result[name] = setOf()
         else {
             for (elem in entries) {
                 if (elem !in result) {
-                    result[elem] = setOf()
-                    propagateHandshakes(result)
-                    return result
+                    add[elem] = setOf()
+                    //return result
+
                 } else {
                     if (result[elem]?.isNotEmpty()!!) {
-                        for (str in result[elem]!!)
-                            if (!result[name]?.contains(str)!!) {
+                        for (str in result[elem]!!) {
+                            if (!result[name]?.contains(str)!! && !result[name]?.contains(str)!!) {
                                 result[name] = result[name]?.plus(str)!!
-                                propagateHandshakes(result)
                             }
+                            if (str in result) {
+                                result += add
+                                propagateHandshakes(result)
+                                return result
+                            }
+                        }
                     }
                 }
             }
-            if (result[name]?.contains(name)!!) result[name] = result[name]?.minus(name)!!
         }
     }
-    return result
+    return (result + add)
 }
 
 /**
@@ -309,7 +314,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (i in 0 until number / 2) {
+        if (list.contains(i) && list.contains(number - i))
+            return Pair(list.indexOf(i), list.indexOf(number - i))
+    }
+    return Pair(-1, -1)
+}
 
 /**
  * Очень сложная
