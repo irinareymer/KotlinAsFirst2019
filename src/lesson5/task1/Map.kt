@@ -281,7 +281,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
         else
             for (elem in entries) {
                 if (elem !in result) result[elem] = mutableSetOf()
-                else result[name] = moreHandshakes(result, entries.toMutableSet(), elem)
+                else result[name] = moreHandshakes(result, entries.toMutableSet(), elem) - name
             }
     }
     return result
