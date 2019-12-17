@@ -265,36 +265,26 @@ fun hasAnagrams(words: List<String>): Boolean = TODO()
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
-    val result = mutableMapOf<String, Set<String>>()
-    val add = mutableMapOf<String, Set<String>>()
-    result.putAll(friends)
-    for ((name, entries) in result) {
-        if (entries.isEmpty()) result[name] = setOf()
-        else {
-            for (elem in entries) {
-                if (elem !in result) {
-                    add[elem] = setOf()
-                    //return result
-
-                } else {
-                    if (result[elem]?.isNotEmpty()!!) {
-                        for (str in result[elem]!!) {
-                            if (!result[name]?.contains(str)!! && !result[name]?.contains(str)!!) {
-                                result[name] = result[name]?.plus(str)!!
-                            }
-                            if (str in result) {
-                                result += add
-                                propagateHandshakes(result)
-                                return result
-                            }
-                        }
-                    }
-                }
-            }
+fun moreHandshakes(friends: Map<String, Set<String>>, entries: MutableSet<String>, name: String): Set<String> {
+    if (name in friends && !friends[name]?.let { entries.containsAll(it) }!!)
+        for (s in friends[name] ?: error("")) {
+            if (!entries.contains(s) && name != s) entries += s
+            moreHandshakes(friends, entries, s)
         }
+    return entries
+}
+
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val result = friends.toMutableMap()
+    for ((name, entries) in friends) {
+        if (entries.isEmpty()) result[name] = mutableSetOf()
+        else
+            for (elem in entries) {
+                if (elem !in result) result[elem] = mutableSetOf()
+                else result[name] = moreHandshakes(result, entries.toMutableSet(), elem)
+            }
     }
-    return (result + add)
+    return result
 }
 
 /**
@@ -315,9 +305,12 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i in 0..number / 2)
-        if (list.contains(i) && list.contains(number - i) && list.indexOf(i) != list.lastIndexOf(number - i))
-            return Pair(list.indexOf(i), list.lastIndexOf(number - i))
+    val map = mutableMapOf<Int, Int>()
+    for (i in 0 until list.size) {
+        val find = number - list[i]
+        if (find in map) return Pair(map[find]!!, i)
+        else map[list[i]] = i
+    }
     return Pair(-1, -1)
 }
 
@@ -333,8 +326,7 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  * Перед решением этой задачи лучше прочитать статью Википедии "Динамическое программирование".
  *
  * Например:
- *   bagPacking(
- *     mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
+ *   bagPacking( *     mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
  *     850
  *   ) -> setOf("Кубок")
  *   bagPacking(
